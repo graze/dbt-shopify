@@ -20,8 +20,12 @@ with shipping_order_lines as (
 
 ), discount_allocation as (
 
-    select *
+    select
+        order_line_id,
+        source_relation,
+        SUM(amount) AS discount_amount
     from {{ var('shopify_discount_allocation') }}
+    group by order_line_id, source_relation
 
 ),
 joined as (
@@ -29,7 +33,7 @@ joined as (
     select
         shipping_order_lines.*,
         tax_lines_aggregated.order_line_tax,
-        discount_allocation.amount AS order_line_discount_allocation
+        discount_allocation.discount_amount AS order_line_discount_allocation
 
     from shipping_order_lines
     left join tax_lines_aggregated
