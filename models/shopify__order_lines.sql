@@ -43,6 +43,7 @@ with order_lines as (
 
     select
         order_line_id,
+        source_relation,
         SUM(amount) AS discount_amount
     from {{ var('shopify_discount_allocation') }}
     group by order_line_id
