@@ -18,30 +18,35 @@ with shipping_order_lines as (
     from tax_lines
     group by 1,2
 
-), discount_allocation as (
-
+), 
+discount_application as (
     select
-        order_line_id,
-        source_relation,
-        SUM(amount) AS discount_amount
-    from {{ var('shopify_discount_allocation') }}
-    group by order_line_id, source_relation
+        discount_application.order_id,
+        discount_application.source_relation,
+        max(case
+            when value_type = 'percentage' then (value/100) * shipping_order_lines.price
+            when value_type = 'fixed_amount' then value
+        end) as discount_amount
+    from {{ var('shopify_discount_application') }} AS discount_application
+    inner join shipping_order_lines
+        on discount_application.order_id = shipping_order_lines.order_id
+    where discount_application.target_type = 'shipping_line'
+    group by discount_application.order_id, discount_application.source_relation
 
 ),
 joined as (
 
     select
         shipping_order_lines.*,
-        tax_lines_aggregated.order_line_tax,
-        discount_allocation.discount_amount AS order_line_discount_allocation
-
+        coalesce(tax_lines_aggregated.order_line_tax, 0) as order_line_tax,
+        coalesce(discount_application.discount_amount, 0) as order_line_discount_allocation
     from shipping_order_lines
     left join tax_lines_aggregated
         on tax_lines_aggregated.order_shipping_line_id = shipping_order_lines.order_shipping_line_id
         and tax_lines_aggregated.source_relation = shipping_order_lines.source_relation
-    left join discount_allocation
-        ON discount_allocation.order_line_id = shipping_order_lines.order_shipping_line_id
-        AND discount_allocation.source_relation = shipping_order_lines.source_relation
+    left join discount_application
+        ON discount_application.order_id = shipping_order_lines.order_id
+        AND discount_application.source_relation = shipping_order_lines.source_relation
 )
 
 select *
