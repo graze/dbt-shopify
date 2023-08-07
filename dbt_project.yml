@@ -23,6 +23,7 @@ vars:
     shopify_refund: "{{ ref('stg_shopify__refund') }}"
     shopify_order_adjustment: "{{ ref('stg_shopify__order_adjustment') }}"
     shopify_discount_allocation: "{{ ref('stg_shopify__discount_allocation') }}"
+    shopify_discount_application: "{{ ref('stg_shopify__discount_application') }}"
     shopify_abandoned_checkout: "{{ ref('stg_shopify__abandoned_checkout') }}"
     shopify_collection_product: "{{ ref('stg_shopify__collection_product') }}"
     shopify_collection: "{{ ref('stg_shopify__collection') }}"
