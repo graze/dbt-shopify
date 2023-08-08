@@ -83,7 +83,6 @@ joined as (
         product_variants.option_2 as variant_option_2,
         product_variants.option_3 as variant_option_3,
         product_variants.tax_code as variant_tax_code,
-
         coalesce(tax_lines_aggregated.order_line_tax, 0) as order_line_tax,
         coalesce(discount_allocation.discount_amount, 0) as order_line_discount_allocation
 
