@@ -1,2 +1,2 @@
 packages:
-  - git: "https://github.com/graze/dbt-shopify-source/tree/remove-test-limits"
+  - git: "https://github.com/graze/dbt-shopify-source/blob/remove-test-limits/packages.yml"
