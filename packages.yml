@@ -1,2 +1,2 @@
 packages:
-  - git: https://github.com/graze/dbt-shopify-source/pull/7
+  - git: "https://github.com/graze/dbt-shopify-source/pull/7"
